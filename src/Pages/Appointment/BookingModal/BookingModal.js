@@ -11,7 +11,6 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
 
     const formattedDate = format(selectedDate, 'PP');
 
-
     const handleBooking = event => {
         event.preventDefault();
         const form = event.target;
@@ -19,36 +18,39 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
         const name = form.name.value;
         const email = form.email.value;
         const phone = form.phone.value;
-        // [3, 4, 5].map((value, i) => console.log(value))
+        
         const booking = {
-            treatmentId : _id,
-            treatment : name,
-            date : formattedDate,
+            treatmentId: _id,
+            treatment: name,
+            date: formattedDate,
             slot,
-            patientName : user.displayName,
-            phone : event.target.phone.value,
-        }
-
-
-        fetch('http://localhost:5000/booking',{
+            patientName: user.displayName,
+            phone: phone,
+        };
+    
+        fetch('http://localhost:5000/booking', {
             method: 'POST',
-            headers:{
-                'content-type' : 'application/json'
+            headers: {
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify('booking')
-        }) 
+            body: JSON.stringify(booking), // Correctly stringify the booking object
+        })
         .then(res => res.json())
-        .then(data =>{
-            console.log(data)
+        .then(data => {
+            console.log(data);
+            if (data.insertedId) {
+                toast.success('Booking successful!');
+            } else {
+                toast.error('Failed to book the appointment.');
+            }
             setTreatment(null);
         })
-
-        // TODO: send data to the server
-        // and once data is saved then close the modal 
-        // and display success toast
-        // console.log(booking);
-        // setTreatment(null);
-    }
+        .catch(error => {
+            console.error('Error:', error);
+            toast.error('An error occurred while booking.');
+        });
+    };
+    
 
     return (
         <>
