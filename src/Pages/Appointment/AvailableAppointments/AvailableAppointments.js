@@ -6,12 +6,13 @@ import AppointmentOption from './AppointmentOption';
 const AvailableAppointments = ({ selectedDate }) => {
     const [appointmentOptions, setAppointmentOptions] = useState([]);
     const [treatment, setTreatment] = useState(null);
-
+    const formattedDate = format(selectedDate, 'pp')
+    
     useEffect(() => {
-        fetch('http://localhost:5000/service')
+        fetch(`http://localhost:5000/available?date=${formattedDate}`)
             .then(res => res.json())
             .then(data => setAppointmentOptions(data))
-    }, [])
+    }, [formattedDate])
 
     return (
         <section className='my-16'>

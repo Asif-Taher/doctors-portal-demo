@@ -13,19 +13,16 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
 
     const handleBooking = event => {
         event.preventDefault();
-        const form = event.target;
-        const slot = form.slot.value;
-        const name = form.name.value;
-        const email = form.email.value;
-        const phone = form.phone.value;
+        const slot = event.target.slot.value;
         
         const booking = {
             treatmentId: _id,
             treatment: name,
             date: formattedDate,
             slot,
+            patient: user.email,
             patientName: user.displayName,
-            phone: phone,
+            phone: event.target.phone.value,
         };
     
         fetch('http://localhost:5000/booking', {
@@ -38,17 +35,13 @@ const BookingModal = ({ treatment, setTreatment, selectedDate }) => {
         .then(res => res.json())
         .then(data => {
             console.log(data);
-            if (data.insertedId) {
-                toast.success('Booking successful!');
+            if (data.success) {
+                toast(`Appointment is set , ${formattedDate} at ${slot}`);
             } else {
-                toast.error('Failed to book the appointment.');
+                toast.error(`Already have an Appointment on, ${data.booking?.date} at ${data.booking?.slot}`);
             }
             setTreatment(null);
         })
-        .catch(error => {
-            console.error('Error:', error);
-            toast.error('An error occurred while booking.');
-        });
     };
     
 
